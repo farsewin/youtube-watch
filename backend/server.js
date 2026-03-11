@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
 app.get('/voice/token', livekitController.getToken);
 
 // Catch-all route to serve the frontend for any other requests (SPA support)
-app.get('*', (req, res) => {
+app.get('(.*)', (req, res) => {
   if (!req.path.startsWith('/voice/token') && !req.path.startsWith('/api/health')) {
     res.sendFile(path.join(distPath, 'index.html'), (err) => {
       if (err) {
