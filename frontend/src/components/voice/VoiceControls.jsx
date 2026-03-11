@@ -9,7 +9,7 @@ import '@livekit/components-styles';
 import { Mic, MicOff, Loader2, AlertCircle, Settings } from 'lucide-react';
 import { Track } from 'livekit-client';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || '';
 const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || 'wss://your-project.livekit.cloud';
 
 function VoiceControlsInner() {
