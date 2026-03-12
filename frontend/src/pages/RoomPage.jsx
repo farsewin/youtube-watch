@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import VideoPlayer from '../components/video/VideoPlayer';
 import ChatPanel from '../components/chat/ChatPanel';
 import VoiceControls from '../components/voice/VoiceControls';
 import ParticipantsList from '../components/voice/ParticipantsList';
 import useSocket from '../hooks/useSocket';
-import { LayoutGrid, Users, Settings } from 'lucide-react';
+import { LayoutGrid, Users, LogOut } from 'lucide-react';
 
 export default function RoomPage() {
   const { roomId } = useParams();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialName = searchParams.get('name');
   const initialVideoId = searchParams.get('videoId');
 
@@ -23,6 +24,14 @@ export default function RoomPage() {
     videoId: initialVideoId,
     autoJoin: joined 
   });
+
+  const handleLeave = () => {
+    if (socket) {
+      socket.emit('room:leave', { roomId });
+      socket.disconnect();
+    }
+    navigate('/');
+  };
 
   const handleJoin = (e) => {
     e.preventDefault();
@@ -81,7 +90,16 @@ export default function RoomPage() {
               <Users className="w-4 h-4 text-primary" />
               <span className="font-medium text-sm">{users.length}</span>
            </div>
-        </div>
+
+           <button
+             onClick={handleLeave}
+             title="Leave Room"
+             className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200"
+           >
+             <LogOut className="w-4 h-4" />
+             <span className="hidden sm:inline">Leave</span>
+           </button>
+         </div>
       </header>
 
       {/* Main Layout */}
