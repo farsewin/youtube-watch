@@ -37,7 +37,9 @@ export default function RoomPage() {
   };
 
   const handleShare = () => {
-    const shareUrl = window.location.href;
+    // Only copy the base URL (e.g. https://.../room/XYZ)
+    // This ensures guests don't inherit the host's name and are prompted for their own.
+    const shareUrl = window.location.origin + window.location.pathname;
     navigator.clipboard.writeText(shareUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
