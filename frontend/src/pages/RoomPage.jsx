@@ -5,7 +5,7 @@ import ChatPanel from '../components/chat/ChatPanel';
 import VoiceControls from '../components/voice/VoiceControls';
 import ParticipantsList from '../components/voice/ParticipantsList';
 import useSocket from '../hooks/useSocket';
-import { LayoutGrid, Users, LogOut } from 'lucide-react';
+import { LayoutGrid, Users, LogOut, Link, Check } from 'lucide-react';
 
 export default function RoomPage() {
   const { roomId } = useParams();
@@ -25,12 +25,22 @@ export default function RoomPage() {
     autoJoin: joined 
   });
 
+  const [copied, setCopied] = useState(false);
+
   const handleLeave = () => {
     if (socket) {
       socket.emit('room:leave', { roomId });
       socket.disconnect();
     }
     navigate('/');
+  };
+
+  const handleShare = () => {
+    const shareUrl = window.location.href;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   const handleJoin = (e) => {
@@ -90,6 +100,19 @@ export default function RoomPage() {
               <Users className="w-4 h-4 text-primary" />
               <span className="font-medium text-sm">{users.length}</span>
            </div>
+
+           <button
+             onClick={handleShare}
+             title="Copy invite link"
+             className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-300 ${
+               copied
+                 ? 'bg-green-500/20 border-green-500/40 text-green-400'
+                 : 'bg-black/40 border-white/10 text-gray-300 hover:border-primary/40 hover:text-primary'
+             }`}
+           >
+             {copied ? <Check className="w-4 h-4" /> : <Link className="w-4 h-4" />}
+             <span className="hidden sm:inline">{copied ? 'Copied!' : 'Invite'}</span>
+           </button>
 
            <button
              onClick={handleLeave}
