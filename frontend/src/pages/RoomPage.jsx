@@ -5,7 +5,7 @@ import ChatPanel from '../components/chat/ChatPanel';
 import VoiceControls from '../components/voice/VoiceControls';
 import ParticipantsList from '../components/voice/ParticipantsList';
 import useSocket from '../hooks/useSocket';
-import { LayoutGrid, Users, LogOut, Link, Check } from 'lucide-react';
+import { LayoutGrid, Users, LogOut, Link, Check, MessageSquare } from 'lucide-react';
 
 export default function RoomPage() {
   const { roomId } = useParams();
@@ -17,6 +17,7 @@ export default function RoomPage() {
   const [name, setName] = useState(initialName || '');
   const [tempName, setTempName] = useState('');
   const [joined, setJoined] = useState(!!initialName);
+  const [showChat, setShowChat] = useState(false);
   
   const { socket, roomData, users } = useSocket({ 
     roomId, 
@@ -102,6 +103,19 @@ export default function RoomPage() {
            </div>
 
            <button
+             onClick={() => setShowChat(p => !p)}
+             title={showChat ? 'Hide Chat' : 'Show Chat'}
+             className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+               showChat
+                 ? 'bg-primary/20 border-primary/40 text-primary'
+                 : 'bg-black/40 border-white/10 text-gray-400 hover:text-gray-200'
+             }`}
+           >
+             <MessageSquare className="w-4 h-4" />
+             <span className="hidden sm:inline">Chat</span>
+           </button>
+
+           <button
              onClick={handleShare}
              title="Copy invite link"
              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-300 ${
@@ -146,9 +160,11 @@ export default function RoomPage() {
          </div>
          
          {/* Chat Panel */}
-         <div className="w-full lg:w-96 flex-shrink-0 flex flex-col rounded-3xl overflow-hidden glass-panel border border-white/5 shadow-2xl relative">
-            <ChatPanel socket={socket} username={name} roomId={roomId} />
-         </div>
+         {showChat && (
+           <div className="w-full lg:w-96 flex-shrink-0 flex flex-col rounded-3xl overflow-hidden glass-panel border border-white/5 shadow-2xl relative">
+              <ChatPanel socket={socket} username={name} roomId={roomId} />
+           </div>
+         )}
       </div>
     </div>
   );

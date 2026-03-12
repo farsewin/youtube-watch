@@ -102,8 +102,11 @@ export default function VoiceControls({ roomId, username }) {
         serverUrl={LIVEKIT_URL}
         connect={true}
         onDisconnected={() => setToken(null)}
+        className="flex flex-col items-center justify-center w-full h-full"
       >
         <VoiceControlsInner />
+        {/* RoomAudioRenderer is essential for hearing others */}
+        <RoomAudioRenderer />
       </LiveKitRoom>
     );
   }
